@@ -14,35 +14,27 @@ export default function Home() {
 
   useEffect(() => {
     return () => {
-      // Cleanup
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
   const handleMouseMove = (e) => {
     const timestamp = Date.now();
-    const newDataPoint = {
-      x: e.clientX,
-      y: e.clientY,
-      timestamp,
-    };
+    const newDataPoint = { x: e.clientX, y: e.clientY, timestamp };
 
     if (dataRef.current.length > 0) {
       const lastPoint = dataRef.current[dataRef.current.length - 1];
-      const timeDiff = (timestamp - lastPoint.timestamp) / 1000; // in seconds
-      const distance = Math.sqrt(
-        Math.pow(e.clientX - lastPoint.x, 2) + 
-        Math.pow(e.clientY - lastPoint.y, 2)
-      );
+      const timeDiff = (timestamp - lastPoint.timestamp) / 1000;
+      const distance = Math.hypot(e.clientX - lastPoint.x, e.clientY - lastPoint.y);
       const speed = timeDiff > 0 ? distance / timeDiff : 0;
 
-      setRecentSpeeds(prev => {
+      setRecentSpeeds((prev) => {
         const updated = [...prev, Math.round(speed)];
-        return updated.slice(-10); // Keep last 10 speeds
+        return updated.slice(-10);
       });
     }
 
-    dataRef.current = [...dataRef.current, newDataPoint].slice(-100); // Keep last 100 points
+    dataRef.current = [...dataRef.current, newDataPoint].slice(-100);
     setMouseData(dataRef.current);
   };
 
@@ -52,6 +44,7 @@ export default function Home() {
     setRecentSpeeds([]);
     window.addEventListener('mousemove', handleMouseMove);
     setIsTracking(true);
+    setConfidence(null);
   };
 
   const stopTracking = () => {
@@ -66,36 +59,30 @@ export default function Home() {
     }
 
     setIsTraining(true);
-    
-    // Extract features (speed and direction changes)
+
     const features = [];
     for (let i = 1; i < mouseData.length; i++) {
       const prev = mouseData[i - 1];
       const curr = mouseData[i];
       const timeDiff = (curr.timestamp - prev.timestamp) / 1000;
-      const distance = Math.sqrt(
-        Math.pow(curr.x - prev.x, 2) + 
-        Math.pow(curr.y - prev.y, 2)
-      );
+      const distance = Math.hypot(curr.x - prev.x, curr.y - prev.y);
       const speed = timeDiff > 0 ? distance / timeDiff : 0;
       const angle = Math.atan2(curr.y - prev.y, curr.x - prev.x);
       features.push({ speed, angle });
     }
 
-    // Normalize data
     const speeds = features.map(f => f.speed);
-    const angles = features.map(f => f.angle);
-    
     const maxSpeed = Math.max(...speeds);
+
     const normalizedFeatures = features.map(f => ({
       speed: maxSpeed > 0 ? f.speed / maxSpeed : 0,
-      angle: f.angle / Math.PI // Normalize angle to [-1, 1]
+      angle: f.angle / Math.PI,
     }));
 
     setTrainingData(normalizedFeatures);
     modelRef.current = trainModel(normalizedFeatures);
     setIsTraining(false);
-    console.log('Training complete!');
+    alert('Training complete!');
   };
 
   const calculateConfidence = () => {
@@ -104,25 +91,17 @@ export default function Home() {
       return;
     }
 
-    // Extract features from recent data
     const recentFeatures = [];
-    const recentPoints = mouseData.slice(-20); // Last 20 points
+    const recentPoints = mouseData.slice(-20);
     for (let i = 1; i < recentPoints.length; i++) {
       const prev = recentPoints[i - 1];
       const curr = recentPoints[i];
       const timeDiff = (curr.timestamp - prev.timestamp) / 1000;
-      const distance = Math.sqrt(
-        Math.pow(curr.x - prev.x, 2) + 
-        Math.pow(curr.y - prev.y, 2)
-      );
+      const distance = Math.hypot(curr.x - prev.x, curr.y - prev.y);
       const speed = timeDiff > 0 ? distance / timeDiff : 0;
-      const angle = Math.atan2(curr.y - prev.y, curr.x - prev.x);
-      
-      // Normalize using same factors as training
-      const maxSpeed = Math.max(...trainingData.map(t => t.speed * (1/0.01))); // Inverse of normalization
-      const normalizedSpeed = maxSpeed > 0 ? speed / maxSpeed : 0;
-      const normalizedAngle = angle / Math.PI;
-      
+      const maxSpeed = Math.max(...trainingData.map(t => t.speed)) || 1;
+      const normalizedSpeed = speed / maxSpeed;
+      const normalizedAngle = Math.atan2(curr.y - prev.y, curr.x - prev.x) / Math.PI;
       recentFeatures.push({ speed: normalizedSpeed, angle: normalizedAngle });
     }
 
@@ -131,50 +110,51 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Mouse Behavior Analysis</h1>
-      
-      <div className={styles.controls}>
+    <main id="appContainer" className={styles.container}>
+      <h1 id="pageTitle" className={styles.title}>Mouse Behavior Analysis</h1>
+
+      <section id="controlsSection" className={styles.controls}>
         {!isTracking ? (
-          <button onClick={startTracking} className={styles.button}>
-            Start Tracking
-          </button>
+          <button id="startBtn" onClick={startTracking} className={styles.button}>Start Tracking</button>
         ) : (
-          <button onClick={stopTracking} className={styles.button}>
-            Stop Tracking
-          </button>
+          <button id="stopBtn" onClick={stopTracking} className={`${styles.button} ${styles.danger}`}>Stop Tracking</button>
         )}
-        
-        <button 
-          onClick={normalizeAndTrain} 
+
+        <button
+          id="trainBtn"
+          onClick={normalizeAndTrain}
           className={styles.button}
           disabled={isTraining || mouseData.length < 20}
         >
           {isTraining ? 'Training...' : 'Normalize & Train'}
         </button>
-        
-        <button 
-          onClick={calculateConfidence} 
+
+        <button
+          id="confidenceBtn"
+          onClick={calculateConfidence}
           className={styles.button}
           disabled={!modelRef.current || mouseData.length < 20}
         >
           Calculate Confidence
         </button>
-      </div>
-      
-      <div className={styles.dataSection}>
+      </section>
+
+      <section id="liveDataSection" className={styles.dataSection}>
         <h2>Live Data</h2>
-        <p>Data points collected: {mouseData.length}</p>
-        <p>Recent mouse speeds (px/s): [{recentSpeeds.join(', ')}]</p>
-      </div>
-      
+        <p><strong>Data points collected:</strong> {mouseData.length}</p>
+        <p><strong>Recent mouse speeds (px/s):</strong></p>
+        <div id="speedsContainer" className={styles.speedList}>
+          {recentSpeeds.length > 0 ? recentSpeeds.join(', ') : 'No speed data yet'}
+        </div>
+      </section>
+
       {confidence !== null && (
-        <div className={styles.result}>
+        <section id="confidenceResult" className={styles.result}>
           <h2>Confidence Score</h2>
           <p className={styles.confidence}>{confidence}%</p>
           <p>Similarity to original behavior pattern</p>
-        </div>
+        </section>
       )}
-    </div>
+    </main>
   );
 }
