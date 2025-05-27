@@ -1,6 +1,6 @@
 # Mouse Behavior Authentication System
 
-![Demo Screenshot](https://via.placeholder.com/800x400?text=Mouse+Behavior+Authentication+Demo)
+![Demo Screenshot](https://github.com/jawad4605/browser_behaviour/blob/master/public/image.png)
 
 A client-side application that authenticates users based on their unique mouse movement patterns using TensorFlow.js.
 
