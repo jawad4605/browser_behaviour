@@ -1,40 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Mouse Behavior Analysis App
 
-## Getting Started
+A minimal browser application that tracks mouse movements and analyzes behavior patterns to determine if new movements match the initially trained pattern.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Tracks mouse movements (position and timestamp)
+- Calculates movement speed and direction between points
+- Trains a simple similarity-based model on initial behavior
+- Computes confidence scores (0-100%) for new behavior patterns
+- Entirely client-side implementation with no backend
+- Clean, responsive UI with CSS modules
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+- Next.js (React framework)
+- CSS Modules for styling
+- Client-side JavaScript for data processing and modeling
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## How It Works
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+1. **Data Collection**:
+   - Records mouse position (x,y) and timestamp at each movement
+   - Calculates speed (pixels/second) between consecutive points
+   - Maintains a rolling window of the last 100 data points
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Feature Extraction**:
+   - Extracts speed and direction (angle) features
+   - Normalizes features (speed to [0,1], angle to [-1,1])
 
-## Learn More
+3. **Model Training**:
+   - Calculates average patterns and variance from training data
+   - Uses Gaussian similarity measure based on variance
 
-To learn more about Next.js, take a look at the following resources:
+4. **Prediction**:
+   - Compares new behavior patterns to trained patterns
+   - Returns confidence score of similarity (0-100%)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+## Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Clone the repository:
+   ```bash
+   https://github.com/usama644515/browser_behaviour.git
+   cd browser_behaviour
+   ```
 
-## Deploy on Vercel
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Usage
+
+1. Click "Start Tracking" to begin collecting mouse movement data
+2. Move your mouse naturally to build up data points
+3. Click "Normalize & Train" when you have at least 20 data points
+4. Continue moving your mouse to collect new data
+5. Click "Calculate Confidence" to see similarity score
+
+## Customization
+
+You can adjust these parameters in the code:
+
+- `dataRef.current.slice(-100)` - Number of data points to retain
+- `recentSpeeds.slice(-10)` - Number of recent speeds to display
+- `mouseData.slice(-20)` - Window size for confidence calculation
