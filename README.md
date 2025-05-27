@@ -1,73 +1,139 @@
-# Mouse Behavior Analysis App
+# Mouse Behavior Authentication System
 
-A minimal browser application that tracks mouse movements and analyzes behavior patterns to determine if new movements match the initially trained pattern.
+![Demo Screenshot](https://via.placeholder.com/800x400?text=Mouse+Behavior+Authentication+Demo)
+
+A client-side application that authenticates users based on their unique mouse movement patterns using TensorFlow.js.
 
 ## Features
-
-- Tracks mouse movements (position and timestamp)
-- Calculates movement speed and direction between points
-- Trains a simple similarity-based model on initial behavior
-- Computes confidence scores (0-100%) for new behavior patterns
-- Entirely client-side implementation with no backend
-- Clean, responsive UI with CSS modules
-
-## Technologies Used
-
-- Next.js (React framework)
-- CSS Modules for styling
-- Client-side JavaScript for data processing and modeling
+   
+- 🖱️ Real-time mouse movement tracking (position, speed, acceleration)
+- 🧠 Neural network model training in the browser
+- 🔐 Behavioral biometric authentication
+- 📊 Advanced metrics visualization
+- 👥 Multiple user profile support
+- 🎨 Interactive mouse path visualization
 
 ## How It Works
 
 1. **Data Collection**:
-   - Records mouse position (x,y) and timestamp at each movement
-   - Calculates speed (pixels/second) between consecutive points
-   - Maintains a rolling window of the last 100 data points
+   - Tracks mouse movements (x, y coordinates and timestamps)
+   - Calculates derived metrics (speed, acceleration, direction changes)
 
-2. **Feature Extraction**:
-   - Extracts speed and direction (angle) features
-   - Normalizes features (speed to [0,1], angle to [-1,1])
+2. **Model Training**:
+   - Uses a 4-layer neural network with dropout regularization
+   - Normalizes features using z-score standardization
+   - Trains on browser using TensorFlow.js
 
-3. **Model Training**:
-   - Calculates average patterns and variance from training data
-   - Uses Gaussian similarity measure based on variance
+3. **Authentication**:
+   - Compares new movements to trained patterns
+   - Generates confidence scores (0-100%)
+   - Provides visual feedback on verification results
 
-4. **Prediction**:
-   - Compares new behavior patterns to trained patterns
-   - Returns confidence score of similarity (0-100%)
+## Technical Specifications
+
+### Model Architecture
+Input Layer (4 features)
+→ Dense (16 units, ReLU, L2 regularization)
+→ Dropout (20%)
+→ Dense (8 units, ReLU)
+→ Dropout (10%)
+→ Dense (4 units, ReLU)
+→ Output (1 unit, Sigmoid)
+
+
+### Tracked Features
+1. Movement speed (px/ms)
+2. Acceleration (px/ms²)
+3. Direction changes (radians)
+4. Total distance traveled (px)
 
 ## Installation
 
 1. Clone the repository:
-   ```bash
-   https://github.com/usama644515/browser_behaviour.git
-   cd browser_behaviour
-   ```
+```bash
+git clone https://github.com/yourusername/mouse-authentication.git
+cd mouse-authentication
+Install dependencies:
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+bash
+npm install
+Start the development server:
 
-3. Run the development server:
-   ```bash
-   npm run dev
-   ```
+bash
+npm run dev
+Open your browser to:
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+http://localhost:3000
+Usage
+Start Tracking:
 
-## Usage
+Click "Start Tracking" to begin collecting mouse data
 
-1. Click "Start Tracking" to begin collecting mouse movement data
-2. Move your mouse naturally to build up data points
-3. Click "Normalize & Train" when you have at least 20 data points
-4. Continue moving your mouse to collect new data
-5. Click "Calculate Confidence" to see similarity score
+Move your mouse naturally to build a behavior profile
 
-## Customization
+Train Model:
 
-You can adjust these parameters in the code:
+After collecting sufficient data (≥100 points), click "Train Model"
 
-- `dataRef.current.slice(-100)` - Number of data points to retain
-- `recentSpeeds.slice(-10)` - Number of recent speeds to display
-- `mouseData.slice(-20)` - Window size for confidence calculation
+Wait for training to complete (typically 20-30 seconds)
+
+Verify Identity:
+
+Continue moving your mouse
+
+Click "Verify Identity" to get a confidence score
+
+Scores ≥85% indicate likely match
+
+File Structure
+/src/
+├── pages/               # Next.js pages
+│   └── index.js         # Main application
+├── styles/              # CSS modules
+│   └── Home.module.css  # Component styles
+└── utils/               # Utility functions
+    └── normalization.js # Data normalization
+Dependencies
+TensorFlow.js - Browser-based ML library
+
+Next.js - React framework
+
+React - UI library
+
+Browser Support
+Chrome (latest)
+
+Firefox (latest)
+
+Edge (latest)
+
+Safari (latest)
+
+Note: Performance may vary on mobile devices
+
+License
+MIT License
+
+Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Acknowledgments
+TensorFlow.js team for making ML accessible in the browser
+
+Next.js for the excellent React framework
+
+The open source community for countless supporting libraries
+
+
+This README includes:
+
+1. Clear project description
+2. Key features with emoji icons
+3. Technical implementation details
+4. Installation and usage instructions
+5. File structure overview
+6. Dependency information
+7. Browser compatibility
+8. License and contribution info
+
+You can customize the placeholder image URL with an actual screenshot of your application. The markdown is properly formatted for GitHub and includes all sections users and developers would expect to see.
