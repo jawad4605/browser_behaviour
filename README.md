@@ -50,20 +50,19 @@ Input Layer (4 features)
 ## Installation
 
 1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/mouse-authentication.git
+            git clone https://github.com/yourusername/mouse-authentication.git
 cd mouse-authentication
 Install dependencies:
 
 bash
-npm install
+            npm install
 Start the development server:
 
 bash
-npm run dev
+               npm run dev
 Open your browser to:
 
-http://localhost:3000
+         http://localhost:3000
 Usage
 Start Tracking:
 
@@ -91,8 +90,6 @@ File Structure
 │   └── index.js         # Main application
 ├── styles/              # CSS modules
 │   └── Home.module.css  # Component styles
-└── utils/               # Utility functions
-    └── normalization.js # Data normalization
 Dependencies
 TensorFlow.js - Browser-based ML library
 
@@ -124,16 +121,3 @@ Next.js for the excellent React framework
 
 The open source community for countless supporting libraries
 
-
-This README includes:
-
-1. Clear project description
-2. Key features with emoji icons
-3. Technical implementation details
-4. Installation and usage instructions
-5. File structure overview
-6. Dependency information
-7. Browser compatibility
-8. License and contribution info
-
-You can customize the placeholder image URL with an actual screenshot of your application. The markdown is properly formatted for GitHub and includes all sections users and developers would expect to see.
