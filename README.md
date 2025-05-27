@@ -40,8 +40,8 @@ A minimal browser application that tracks mouse movements and analyzes behavior 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/mouse-behavior-analysis.git
-   cd mouse-behavior-analysis
+   https://github.com/usama644515/browser_behaviour.git
+   cd browser_behaviour
    ```
 
 2. Install dependencies:
