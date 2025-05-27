@@ -85,11 +85,11 @@ Click "Verify Identity" to get a confidence score
 Scores ≥85% indicate likely match
 
 File Structure
-/src/
-├── pages/               # Next.js pages
-│   └── index.js         # Main application
-├── styles/              # CSS modules
-│   └── Home.module.css  # Component styles
+         /src/
+            ├── pages/               # Next.js pages
+            │   └── index.js         # Main application
+            ├── styles/              # CSS modules
+            │   └── Home.module.css  # Component styles
 Dependencies
 TensorFlow.js - Browser-based ML library
 
